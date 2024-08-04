@@ -59,7 +59,8 @@ The training results, including the loss curves and evaluation metrics, are show
 
 The trained YOLOv8 model is deployed using Streamlit Cloud, a Python library that makes it easy to create and share custom web applications. The deployed application allows users to upload images or videos and receive bounding boxes around detected license plates.
 
-You can access it right here: https://licenseplatedetectionn.streamlit.app/
+You can access it right here: 
+[License Plate Detection](https://licenseplatedetectionn.streamlit.app/)
 
 ### Streamlit Application
 
