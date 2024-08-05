@@ -4,9 +4,10 @@ import numpy as np
 from ultralytics import YOLO
 from PIL import Image
 import os
+import pytesseract
 
 # Set the title of the Streamlit app
-st.title("YOLO Image and Video Processing")
+st.title("YOLO Image and Video Processing with OCR")
 
 # Allow users to upload images or videos
 uploaded_file = st.file_uploader("Upload an image or video", type=["jpg", "jpeg", "png", "bmp", "mp4", "avi", "mov", "mkv"])
@@ -39,6 +40,14 @@ def predict_and_save_image(path_test_car, output_image_path):
                 cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv2.putText(image, f'{confidence*100:.2f}%', (x1, y1 - 10), 
                             cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+                # Extract the bounding box area for OCR
+                box_region = image[y1:y2, x1:x2]
+                text = pytesseract.image_to_string(box_region)
+                cv2.putText(image, text, (x1, y2 + 20), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+                # Display bounding box coordinates
+                st.write(f'Bounding box coordinates: ({x1}, {y1}), ({x2}, {y2})')
+                st.write(f'Text inside bbox: "{text}"')
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         cv2.imwrite(output_image_path, image)
         return output_image_path
@@ -80,6 +89,14 @@ def predict_and_plot_video(video_path, output_path):
                     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                     cv2.putText(frame, f'{confidence*100:.2f}%', (x1, y1 - 10), 
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+                    # Extract the bounding box area for OCR
+                    box_region = rgb_frame[y1:y2, x1:x2]
+                    text = pytesseract.image_to_string(box_region)
+                    cv2.putText(frame, text, (x1, y2 + 20), 
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+                    # Display bounding box coordinates
+                    st.write(f'Bounding box coordinates: ({x1}, {y1}), ({x2}, {y2})')
+                    st.write(f'Text inside bbox: "{text}"')
             out.write(frame)
         cap.release()
         out.release()
